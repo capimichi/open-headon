@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8vtestarena01"]
+[gd_scene format=3 uid="uid://be7rhdd7pejb5"]
 
 [ext_resource type="Texture2D" path="res://src/environment/assets/level00.png" id="1_map"]
 [ext_resource type="PackedScene" path="res://src/ship/views/ship.tscn" id="2_ship"]

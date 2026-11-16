@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d1xship0001"]
+[gd_scene format=3 uid="uid://d1xship0001"]
 
 [ext_resource type="Script" path="res://src/ship/controllers/ship_controller.gd" id="1_controller"]
 [ext_resource type="Script" path="res://src/ship/views/ship_view.gd" id="2_view"]

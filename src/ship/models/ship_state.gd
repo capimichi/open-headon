@@ -28,6 +28,11 @@ var is_alive: bool = true
 func get_angle_radians() -> float:
 	return float(angle_step_index) * deg_to_rad(STEP_ANGLE_DEGREES)
 
+func get_thrust_direction() -> Vector2:
+	# Frame 0 is facing DOWN (+Y), 16 is RIGHT (+X), 32 is UP (-Y), 48 is LEFT (-X)
+	var rad = (float(angle_step_index) * deg_to_rad(STEP_ANGLE_DEGREES)) + (PI / 2.0)
+	return Vector2(cos(rad), sin(rad))
+
 func rotate_left() -> void:
 	angle_step_index = (angle_step_index - 1 + STEP_ANGLE_COUNT) % STEP_ANGLE_COUNT
 

@@ -16,15 +16,15 @@ func update_orientation(angle_step_index: int) -> void:
 		# 64 frames: 8 columns x 8 rows in sprites.png
 		sprite.frame = clampi(angle_step_index, 0, 63)
 
-func set_thrust_active(active: bool, angle_rad: float) -> void:
+func set_thrust_active(active: bool, thrust_direction: Vector2) -> void:
 	if thrust_flame:
 		thrust_flame.visible = active
 		if active:
-			# Draw small engine flame backwards relative to heading
-			var flame_dir = -Vector2(cos(angle_rad), sin(angle_rad))
+			# Draw flame directly behind the ship nozzle
+			var back_dir = -thrust_direction
 			thrust_flame.clear_points()
-			thrust_flame.add_point(Vector2.ZERO)
-			thrust_flame.add_point(flame_dir * 8.0)
+			thrust_flame.add_point(back_dir * 4.0)
+			thrust_flame.add_point(back_dir * 12.0)
 
 	if audio_engine:
 		if active and not audio_engine.playing:

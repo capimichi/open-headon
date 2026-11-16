@@ -59,7 +59,7 @@ func _physics_process(delta: float) -> void:
 		
 	# Update View
 	view.update_orientation(state.angle_step_index)
-	view.set_thrust_active(is_thrusting and state.fuel > 0, state.get_angle_radians())
+	view.set_thrust_active(is_thrusting and state.fuel > 0, state.get_thrust_direction())
 
 func _handle_rotation_input() -> void:
 	if Input.is_action_just_pressed(action_left):

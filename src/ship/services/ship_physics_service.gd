@@ -29,8 +29,7 @@ static func apply_kinematics(state: ShipState, is_thrusting: bool, dt: float) ->
 
 	# 3. Thrust vector in ship orientation
 	if is_thrusting and state.fuel > 0:
-		var rad = state.get_angle_radians()
-		var thrust_vec = Vector2(cos(rad), sin(rad)) * (THRUST_FACTOR * dt)
+		var thrust_vec = state.get_thrust_direction() * (THRUST_FACTOR * dt)
 		state.velocity += thrust_vec
 		state.fuel = maxi(0, state.fuel - int(FUEL_CONSUMPTION_RATE * dt))
 
