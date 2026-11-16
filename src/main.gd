@@ -14,6 +14,7 @@ enum GameState {
 }
 
 var current_state: GameState = GameState.SPLASH
+var active_arena_node: Node2D = null
 
 @onready var ui_container: Control = $UiContainer
 @onready var world_container: Node2D = $WorldContainer
@@ -39,7 +40,7 @@ func change_state(new_state: GameState) -> void:
 			_start_match()
 
 func _show_splash() -> void:
-	# Show splash texture from UI module
+	_cleanup_world()
 	var splash_tex = load("res://src/ui/assets/splash.png")
 	if splash_tex:
 		var tex_rect = TextureRect.new()
@@ -48,7 +49,7 @@ func _show_splash() -> void:
 		tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 		ui_container.add_child(tex_rect)
 		
-		# Fade/transition to main menu after short delay or key press
+		# Fade/transition to main menu after delay
 		var timer = get_tree().create_timer(1.8)
 		timer.timeout.connect(func():
 			if current_state == GameState.SPLASH:
@@ -56,9 +57,8 @@ func _show_splash() -> void:
 		)
 
 func _show_main_menu() -> void:
-	# Clean up previous UI
-	for child in ui_container.get_children():
-		child.queue_free()
+	_cleanup_world()
+	_cleanup_ui()
 		
 	var menu_tex = load("res://src/ui/assets/mainMenu.png")
 	if menu_tex:
@@ -67,9 +67,33 @@ func _show_main_menu() -> void:
 		tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 		ui_container.add_child(tex_rect)
+		
+		# Prompt overlay
+		var label = Label.new()
+		label.text = "[ Press SPACE, ENTER or Click to START TEST FLIGHT ]"
+		label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.add_theme_color_override("font_color", Color(1, 0.9, 0.2))
+		label.position.y = 440
+		ui_container.add_child(label)
 
 func _start_match() -> void:
-	pass
+	_cleanup_ui()
+	_cleanup_world()
+	
+	var arena_scene = load("res://src/environment/views/test_arena.tscn")
+	if arena_scene:
+		active_arena_node = arena_scene.instantiate()
+		world_container.add_child(active_arena_node)
+
+func _cleanup_ui() -> void:
+	for child in ui_container.get_children():
+		child.queue_free()
+
+func _cleanup_world() -> void:
+	for child in world_container.get_children():
+		child.queue_free()
+	active_arena_node = null
 
 func _on_game_started(_mode: int) -> void:
 	change_state(GameState.MATCH_PLAYING)
@@ -78,5 +102,13 @@ func _on_game_over(_winner_id: int) -> void:
 	change_state(GameState.GAME_OVER)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if current_state == GameState.SPLASH and event.is_pressed():
-		change_state(GameState.MAIN_MENU)
+	if current_state == GameState.SPLASH:
+		if event.is_pressed():
+			change_state(GameState.MAIN_MENU)
+	elif current_state == GameState.MAIN_MENU:
+		if event.is_pressed():
+			if event is InputEventKey or event is InputEventMouseButton or event is InputEventJoypadButton:
+				change_state(GameState.MATCH_PLAYING)
+	elif current_state == GameState.MATCH_PLAYING:
+		if event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.keycode == KEY_ESCAPE and event.is_pressed()):
+			change_state(GameState.MAIN_MENU)

@@ -1,0 +1,72 @@
+[gd_scene load_steps=7 format=3 uid="uid://c8vtestarena01"]
+
+[ext_resource type="Texture2D" path="res://src/environment/assets/level00.png" id="1_map"]
+[ext_resource type="PackedScene" path="res://src/ship/views/ship.tscn" id="2_ship"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_top"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bottom"]
+normal = Vector2(0, -1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_left"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_right"]
+normal = Vector2(-1, 0)
+
+[node name="TestArena" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_map")
+centered = false
+
+[node name="Boundaries" type="StaticBody2D" parent="."]
+collision_layer = 2
+collision_mask = 1
+
+[node name="Top" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(740, 0)
+shape = SubResource("WorldBoundaryShape2D_top")
+
+[node name="Bottom" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(740, 677)
+shape = SubResource("WorldBoundaryShape2D_bottom")
+
+[node name="Left" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(0, 338)
+shape = SubResource("WorldBoundaryShape2D_left")
+
+[node name="Right" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(1480, 338)
+shape = SubResource("WorldBoundaryShape2D_right")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 240)
+limit_left = 0
+limit_top = 0
+limit_right = 1480
+limit_bottom = 677
+
+[node name="ShipP1" parent="." instance=ExtResource("2_ship")]
+position = Vector2(240, 200)
+
+[node name="ShipP2" parent="." instance=ExtResource("2_ship")]
+position = Vector2(400, 200)
+player_id = 2
+player_tint = Color(1, 0.25, 0.25, 1)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ControlsHelp" type="Label" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "P1 [Green]: W = Thrust, A/D = Rotate | P2 [Red]: Up = Thrust, Left/Right = Rotate
+Esc = Back to Main Menu"
+horizontal_alignment = 1
+vertical_alignment = 1
