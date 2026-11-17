@@ -37,6 +37,8 @@ static func build_collision_body(solid_mask_path: String, map_width: int, map_he
 			if poly.size() >= 3:
 				var col_poly = CollisionPolygon2D.new()
 				col_poly.polygon = poly
+				# BUILD_SEGMENTS creates hollow boundary walls around terrain without filling empty air!
+				col_poly.build_mode = CollisionPolygon2D.BUILD_SEGMENTS
 				body.add_child(col_poly)
 				
 	# 2. Add impenetrable perimeter boundaries (100px thick boxes around the world)

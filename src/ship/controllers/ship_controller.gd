@@ -36,15 +36,15 @@ func _ready() -> void:
 	EventBus.ship_spawned.emit(player_id, global_position)
 
 func _physics_process(delta: float) -> void:
-	var dt: float = delta * 60.0 # Normalized time step (~1.0 at 60 FPS)
-	
 	var is_thrusting = Input.is_action_pressed(action_thrust)
 	
 	# Docking / Takeoff handling
 	if state.is_docked:
-		ShipPhysicsService.process_docking(state, dt)
+		ShipPhysicsService.process_docking(state, delta)
 		if is_thrusting:
 			state.is_docked = false # Takeoff!
+			state.velocity = state.get_thrust_direction() * 100.0 # Initial upward boost
+			velocity = state.velocity
 			EventBus.ship_docked.emit(player_id, false)
 		else:
 			velocity = Vector2.ZERO
@@ -54,34 +54,34 @@ func _physics_process(delta: float) -> void:
 
 	_handle_rotation_input()
 	
-	ShipPhysicsService.apply_kinematics(state, is_thrusting, dt)
+	# Apply Physics
+	ShipPhysicsService.apply_kinematics(state, is_thrusting, delta)
+	velocity = state.velocity
 	
-	velocity = state.velocity * 60.0
 	move_and_slide()
 	
-	state.velocity = velocity / 60.0
+	# Sync resulting velocity and position
+	state.velocity = velocity
 	state.position = global_position
 	
 	# Handle terrain and platform collisions
-	for i in range(get_slide_collision_count()):
-		var collision = get_slide_collision(i)
+	if get_slide_collision_count() > 0:
+		var collision = get_slide_collision(0)
 		var normal = collision.get_normal()
 		
-		# Check gentle landing on platform (upward normal, low speed, upright angle)
-		if normal.y < -0.7 and state.velocity.length() < 1.2 and absi(state.angle_step_index - 32) <= 4:
+		# Gentle landing on platform
+		if normal.y < -0.7 and state.velocity.length() < 60.0 and absi(state.angle_step_index - 32) <= 4:
 			state.is_docked = true
 			state.velocity = Vector2.ZERO
 			velocity = Vector2.ZERO
 			EventBus.ship_docked.emit(player_id, true)
 			EventBus.play_sfx_requested.emit("fuelFilling", global_position)
-			break
 		else:
 			# Regular bounce
 			ShipPhysicsService.resolve_bounce(state, normal)
-			velocity = state.velocity * 60.0
+			velocity = state.velocity
 			view.play_hit_effect()
 			EventBus.play_sfx_requested.emit("shipHit1", global_position)
-			break
 		
 	# Update View
 	view.update_orientation(state.angle_step_index)
