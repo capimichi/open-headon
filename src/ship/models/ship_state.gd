@@ -26,15 +26,20 @@ var is_in_water: bool = false
 var is_alive: bool = true
 
 func get_angle_radians() -> float:
-	return float(angle_step_index) * deg_to_rad(STEP_ANGLE_DEGREES)
+	return float(16 - angle_step_index) * (PI / 32.0)
 
 func get_thrust_direction() -> Vector2:
-	# Frame 0 is facing DOWN (+Y), 16 is RIGHT (+X), 32 is UP (-Y), 48 is LEFT (-X)
-	var rad = (float(angle_step_index) * deg_to_rad(STEP_ANGLE_DEGREES)) + (PI / 2.0)
+	# Index 0 is facing DOWN (0, 1)
+	# Index 16 is facing RIGHT (1, 0)
+	# Index 32 is facing UP (0, -1)
+	# Index 48 is facing LEFT (-1, 0)
+	var rad = get_angle_radians()
 	return Vector2(cos(rad), sin(rad))
 
 func rotate_left() -> void:
-	angle_step_index = (angle_step_index - 1 + STEP_ANGLE_COUNT) % STEP_ANGLE_COUNT
+	# Counter-clockwise rotation (e.g. from 32 Up towards 48 Left)
+	angle_step_index = (angle_step_index + 1) % STEP_ANGLE_COUNT
 
 func rotate_right() -> void:
-	angle_step_index = (angle_step_index + 1) % STEP_ANGLE_COUNT
+	# Clockwise rotation (e.g. from 32 Up towards 16 Right)
+	angle_step_index = (angle_step_index - 1 + STEP_ANGLE_COUNT) % STEP_ANGLE_COUNT
