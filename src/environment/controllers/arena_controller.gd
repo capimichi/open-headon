@@ -10,13 +10,11 @@ var ship_scene = preload("res://src/ship/views/ship.tscn")
 var ship_p1: ShipController = null
 var ship_p2: ShipController = null
 
-var camera_p1: Camera2D = null
-var camera_p2: Camera2D = null
-
-@onready var split_container: HBoxContainer = $CanvasLayer/SplitContainer
 @onready var viewport1: SubViewport = $CanvasLayer/SplitContainer/ViewportContainerP1/ViewportP1
 @onready var viewport2: SubViewport = $CanvasLayer/SplitContainer/ViewportContainerP2/ViewportP2
-@onready var world_root: Node2D = $WorldRoot
+@onready var world_root: Node2D = $CanvasLayer/SplitContainer/ViewportContainerP1/ViewportP1/WorldRoot
+@onready var camera_p1: Camera2D = $CanvasLayer/SplitContainer/ViewportContainerP1/ViewportP1/CameraP1
+@onready var camera_p2: Camera2D = $CanvasLayer/SplitContainer/ViewportContainerP2/ViewportP2/CameraP2
 
 func _ready() -> void:
 	load_level(current_level_id)
@@ -31,22 +29,25 @@ func load_level(level_id: int) -> void:
 	var map_w = data["width"]
 	var map_h = data["height"]
 	
-	# 1. Clean previous world nodes
+	# 1. Viewport 2 shares the 2D world space of Viewport 1
+	viewport2.world_2d = viewport1.world_2d
+	
+	# 2. Clean previous world nodes
 	for child in world_root.get_children():
 		child.queue_free()
 		
-	# 2. Add Level Background Texture
+	# 3. Add Level Background Texture
 	var bg_sprite = Sprite2D.new()
 	bg_sprite.name = "Background"
 	bg_sprite.texture = load(data["map_texture"])
 	bg_sprite.centered = false
 	world_root.add_child(bg_sprite)
 	
-	# 3. Add Level Solid Terrain Polygons & Boundaries
+	# 4. Add Level Solid Terrain Polygons & Boundaries
 	var collider = LevelLoaderService.build_collision_body(data["solid_mask"], map_w, map_h)
 	world_root.add_child(collider)
 	
-	# 4. Spawn Ships on Platform Coordinates
+	# 5. Spawn Ships on Platform Coordinates
 	var spawns = data["spawns"]
 	
 	ship_p1 = ship_scene.instantiate() as ShipController
@@ -61,35 +62,28 @@ func load_level(level_id: int) -> void:
 	ship_p2.position = Vector2(spawns[1]["x"], spawns[1]["y"])
 	world_root.add_child(ship_p2)
 	
-	# 5. Configure Split Screen SubViewports to share the same World2D
-	viewport2.world_2d = viewport1.world_2d
-	
-	# Setup Camera for Player 1
-	camera_p1 = Camera2D.new()
+	# 6. Configure Camera limits and immediate focus
 	camera_p1.limit_left = 0
 	camera_p1.limit_top = 0
 	camera_p1.limit_right = map_w
 	camera_p1.limit_bottom = map_h
-	camera_p1.position_smoothing_enabled = true
-	camera_p1.position_smoothing_speed = 10.0
-	viewport1.add_child(camera_p1)
+	camera_p1.position = ship_p1.position
+	camera_p1.reset_smoothing()
+	camera_p1.make_current()
 	
-	# Setup Camera for Player 2
-	camera_p2 = Camera2D.new()
 	camera_p2.limit_left = 0
 	camera_p2.limit_top = 0
 	camera_p2.limit_right = map_w
 	camera_p2.limit_bottom = map_h
-	camera_p2.position_smoothing_enabled = true
-	camera_p2.position_smoothing_speed = 10.0
-	viewport2.add_child(camera_p2)
+	camera_p2.position = ship_p2.position
+	camera_p2.reset_smoothing()
+	camera_p2.make_current()
 	
 	EventBus.level_loaded.emit(level_id)
 
 func _process(_delta: float) -> void:
-	# Cameras follow their respective ships in the shared world
 	if is_instance_valid(ship_p1) and is_instance_valid(camera_p1):
-		camera_p1.global_position = ship_p1.global_position
+		camera_p1.position = ship_p1.position
 		
 	if is_instance_valid(ship_p2) and is_instance_valid(camera_p2):
-		camera_p2.global_position = ship_p2.global_position
+		camera_p2.position = ship_p2.position
