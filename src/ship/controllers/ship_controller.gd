@@ -43,7 +43,7 @@ func _physics_process(delta: float) -> void:
 		ShipPhysicsService.process_docking(state, delta)
 		if is_thrusting:
 			state.is_docked = false # Takeoff!
-			state.velocity = state.get_thrust_direction() * 100.0 # Initial upward boost
+			state.velocity = state.get_thrust_direction() * 45.0 # Gentle upward takeoff boost
 			velocity = state.velocity
 			EventBus.ship_docked.emit(player_id, false)
 		else:
@@ -69,8 +69,8 @@ func _physics_process(delta: float) -> void:
 		var collision = get_slide_collision(0)
 		var normal = collision.get_normal()
 		
-		# Gentle landing on platform
-		if normal.y < -0.7 and state.velocity.length() < 60.0 and absi(state.angle_step_index - 32) <= 4:
+		# Gentle landing on platform (upward normal, low speed, upright angle)
+		if normal.y < -0.7 and state.velocity.length() < 40.0 and absi(state.angle_step_index - 32) <= 4:
 			state.is_docked = true
 			state.velocity = Vector2.ZERO
 			velocity = Vector2.ZERO
