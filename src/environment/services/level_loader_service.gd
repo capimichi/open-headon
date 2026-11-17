@@ -1,47 +1,77 @@
 class_name LevelLoaderService
 extends RefCounted
 
-## Service responsible for loading level assets, building polygon collision geometry,
-## and providing verified platform spawn coordinates.
+## Service responsible for loading level assets, building verified polygon collision geometry,
+## and providing verified platform spawn and docking coordinates.
 
 const METADATA_PATH: String = "res://src/environment/assets/level_metadata.json"
+const COLLISION_DATA_PATH: String = "res://src/environment/assets/level_collision_data.json"
+
+static var _cached_metadata: Dictionary = {}
+static var _cached_collision: Dictionary = {}
 
 static func get_level_data(level_id: int) -> Dictionary:
-	var file = FileAccess.open(METADATA_PATH, FileAccess.READ)
-	if not file:
-		push_error("Cannot open level metadata file: " + METADATA_PATH)
-		return {}
-	var json_str = file.get_as_text()
-	var json_data = JSON.parse_string(json_str)
+	if _cached_metadata.is_empty():
+		var file = FileAccess.open(METADATA_PATH, FileAccess.READ)
+		if not file:
+			push_error("Cannot open level metadata file: " + METADATA_PATH)
+			return {}
+		var json_str = file.get_as_text()
+		_cached_metadata = JSON.parse_string(json_str)
+		
 	var key = str(level_id)
-	if json_data and json_data.has(key):
-		return json_data[key]
+	if _cached_metadata.has(key):
+		return _cached_metadata[key]
 	return {}
 
-## Builds solid collision bodies from level_solid mask using BitMap polygon extraction
-static func build_collision_body(solid_mask_path: String, map_width: int, map_height: int) -> StaticBody2D:
+static func get_level_platforms(level_id: int) -> Array:
+	var data = get_level_data(level_id)
+	if data.has("platforms"):
+		return data["platforms"]
+	return []
+
+## Builds complete solid collision body from verified contour dataset
+static func build_collision_body(level_id: int, map_width: int, map_height: int) -> StaticBody2D:
 	var body = StaticBody2D.new()
 	body.name = "TerrainCollider"
 	body.collision_layer = 2
 	body.collision_mask = 1
 	
-	# 1. Convert solid mask image into polygon contours
-	var img = Image.load_from_file(ProjectSettings.globalize_path(solid_mask_path))
-	if img:
-		var bitmap = BitMap.new()
-		bitmap.create_from_image_alpha(img, 0.5)
-		
-		# Epsilon 2.0 produces optimized, faithful polygon boundaries
-		var polygons = bitmap.opaque_to_polygons(Rect2i(0, 0, map_width, map_height), 2.0)
-		for poly in polygons:
-			if poly.size() >= 3:
+	if _cached_collision.is_empty():
+		var col_file = FileAccess.open(COLLISION_DATA_PATH, FileAccess.READ)
+		if col_file:
+			_cached_collision = JSON.parse_string(col_file.get_as_text())
+		else:
+			push_error("Cannot open level collision data file: " + COLLISION_DATA_PATH)
+			
+	var key = str(level_id)
+	if _cached_collision.has(key):
+		var polys = _cached_collision[key]
+		for poly_pts in polys:
+			if poly_pts.size() >= 3:
 				var col_poly = CollisionPolygon2D.new()
-				col_poly.polygon = poly
-				# BUILD_SEGMENTS creates hollow boundary walls around terrain without filling empty air!
+				var packed_pts = PackedVector2Array()
+				packed_pts.resize(poly_pts.size())
+				for i in range(poly_pts.size()):
+					packed_pts[i] = Vector2(poly_pts[i][0], poly_pts[i][1])
+				col_poly.polygon = packed_pts
 				col_poly.build_mode = CollisionPolygon2D.BUILD_SEGMENTS
 				body.add_child(col_poly)
 				
-	# 2. Add impenetrable perimeter boundaries (100px thick boxes around the world)
+	# Add solid platform segment colliders
+	var platforms = get_level_platforms(level_id)
+	for plat in platforms:
+		var plat_poly = CollisionPolygon2D.new()
+		plat_poly.polygon = PackedVector2Array([
+			Vector2(plat["x_start"], plat["y"]),
+			Vector2(plat["x_end"], plat["y"]),
+			Vector2(plat["x_end"], plat["y"] + plat["height"]),
+			Vector2(plat["x_start"], plat["y"] + plat["height"])
+		])
+		plat_poly.build_mode = CollisionPolygon2D.BUILD_SEGMENTS
+		body.add_child(plat_poly)
+				
+	# Add perimeter boundary walls
 	_add_perimeter_walls(body, map_width, map_height)
 	
 	return body

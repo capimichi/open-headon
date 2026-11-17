@@ -44,22 +44,25 @@ func load_level(level_id: int) -> void:
 	world_root.add_child(bg_sprite)
 	
 	# 4. Add Level Solid Terrain Polygons & Boundaries
-	var collider = LevelLoaderService.build_collision_body(data["solid_mask"], map_w, map_h)
+	var collider = LevelLoaderService.build_collision_body(level_id, map_w, map_h)
 	world_root.add_child(collider)
 	
 	# 5. Spawn Ships on Platform Coordinates
 	var spawns = data["spawns"]
+	var platforms = LevelLoaderService.get_level_platforms(level_id)
 	
 	ship_p1 = ship_scene.instantiate() as ShipController
 	ship_p1.player_id = 1
 	ship_p1.player_tint = Color(0.3, 1.0, 0.4) # Green
 	ship_p1.position = Vector2(spawns[0]["x"], spawns[0]["y"])
+	ship_p1.set_active_platforms(platforms)
 	world_root.add_child(ship_p1)
 	
 	ship_p2 = ship_scene.instantiate() as ShipController
 	ship_p2.player_id = 2
 	ship_p2.player_tint = Color(1.0, 0.25, 0.25) # Red
 	ship_p2.position = Vector2(spawns[1]["x"], spawns[1]["y"])
+	ship_p2.set_active_platforms(platforms)
 	world_root.add_child(ship_p2)
 	
 	# 6. Configure Camera limits and immediate focus
