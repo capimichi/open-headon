@@ -51,9 +51,9 @@ offset_right = 150.0
 offset_bottom = -80.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
 text = "LEVEL 00 / 08"
 horizontal_alignment = 1
-add_theme_color_override("font_color", Color(0.3, 0.9, 1, 1))
 
 [node name="LevelNameLabel" type="Label" parent="."]
 layout_mode = 1
@@ -68,9 +68,9 @@ offset_right = 200.0
 offset_bottom = 115.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.2, 1)
 text = "Arctic Conflict"
 horizontal_alignment = 1
-add_theme_color_override("font_color", Color(1, 0.9, 0.2, 1))
 
 [node name="ControlsTip" type="Label" parent="."]
 layout_mode = 1
@@ -85,6 +85,6 @@ offset_right = 250.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.9)
 text = "[ < / > Arrow Keys: Choose Level | ENTER / SPACE: Launch | ESC: Back ]"
 horizontal_alignment = 1
-add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 0.9))
