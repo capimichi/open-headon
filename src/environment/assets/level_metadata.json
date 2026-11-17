@@ -1,0 +1,173 @@
+{
+  "0": {
+    "id": 0,
+    "name": "Arctic Conflict",
+    "width": 1480,
+    "height": 677,
+    "map_texture": "res://src/environment/assets/level00.png",
+    "solid_mask": "res://src/environment/assets/level_solid00.png",
+    "thumbnail": "res://src/environment/assets/level00t.png",
+    "spawns": [
+      {
+        "x": 112,
+        "y": 630
+      },
+      {
+        "x": 1371,
+        "y": 85
+      }
+    ]
+  },
+  "1": {
+    "id": 1,
+    "name": "Aquatic Adventure",
+    "width": 1605,
+    "height": 638,
+    "map_texture": "res://src/environment/assets/level01.png",
+    "solid_mask": "res://src/environment/assets/level_solid01.png",
+    "thumbnail": "res://src/environment/assets/level01t.png",
+    "spawns": [
+      {
+        "x": 248,
+        "y": 102
+      },
+      {
+        "x": 1426,
+        "y": 401
+      }
+    ]
+  },
+  "2": {
+    "id": 2,
+    "name": "Angst",
+    "width": 819,
+    "height": 1028,
+    "map_texture": "res://src/environment/assets/level02.png",
+    "solid_mask": "res://src/environment/assets/level_solid02.png",
+    "thumbnail": "res://src/environment/assets/level02t.png",
+    "spawns": [
+      {
+        "x": 259,
+        "y": 195
+      },
+      {
+        "x": 544,
+        "y": 507
+      }
+    ]
+  },
+  "3": {
+    "id": 3,
+    "name": "Blue Dream",
+    "width": 876,
+    "height": 1198,
+    "map_texture": "res://src/environment/assets/level03.png",
+    "solid_mask": "res://src/environment/assets/level_solid03.png",
+    "thumbnail": "res://src/environment/assets/level03t.png",
+    "spawns": [
+      {
+        "x": 129,
+        "y": 137
+      },
+      {
+        "x": 710,
+        "y": 1083
+      }
+    ]
+  },
+  "4": {
+    "id": 4,
+    "name": "Enemy Mine",
+    "width": 1280,
+    "height": 890,
+    "map_texture": "res://src/environment/assets/level04.png",
+    "solid_mask": "res://src/environment/assets/level_solid04.png",
+    "thumbnail": "res://src/environment/assets/level04t.png",
+    "spawns": [
+      {
+        "x": 138,
+        "y": 111
+      },
+      {
+        "x": 1143,
+        "y": 111
+      }
+    ]
+  },
+  "5": {
+    "id": 5,
+    "name": "Dismal Sport",
+    "width": 1230,
+    "height": 731,
+    "map_texture": "res://src/environment/assets/level05.png",
+    "solid_mask": "res://src/environment/assets/level_solid05.png",
+    "thumbnail": "res://src/environment/assets/level05t.png",
+    "spawns": [
+      {
+        "x": 71,
+        "y": 610
+      },
+      {
+        "x": 1159,
+        "y": 610
+      }
+    ]
+  },
+  "6": {
+    "id": 6,
+    "name": "New York",
+    "width": 758,
+    "height": 825,
+    "map_texture": "res://src/environment/assets/level06.png",
+    "solid_mask": "res://src/environment/assets/level_solid06.png",
+    "thumbnail": "res://src/environment/assets/level06t.png",
+    "spawns": [
+      {
+        "x": 179,
+        "y": 332
+      },
+      {
+        "x": 579,
+        "y": 299
+      }
+    ]
+  },
+  "7": {
+    "id": 7,
+    "name": "Bomb Shelter",
+    "width": 1300,
+    "height": 824,
+    "map_texture": "res://src/environment/assets/level07.png",
+    "solid_mask": "res://src/environment/assets/level_solid07.png",
+    "thumbnail": "res://src/environment/assets/level07t.png",
+    "spawns": [
+      {
+        "x": 134,
+        "y": 756
+      },
+      {
+        "x": 1164,
+        "y": 756
+      }
+    ]
+  },
+  "8": {
+    "id": 8,
+    "name": "Free Enterprise",
+    "width": 1056,
+    "height": 800,
+    "map_texture": "res://src/environment/assets/level08.png",
+    "solid_mask": "res://src/environment/assets/level_solid08.png",
+    "thumbnail": "res://src/environment/assets/level08t.png",
+    "spawns": [
+      {
+        "x": 74,
+        "y": 742
+      },
+      {
+        "x": 999,
+        "y": 742
+      }
+    ]
+  }
+}
