@@ -1,0 +1,143 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/ui/controllers/player_hud_controller.gd" id="1_controller"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.08, 0.1, 0.12, 0.75)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[node name="PlayerHud" type="PanelContainer"]
+custom_minimum_size = Vector2(148, 64)
+offset_right = 148.0
+offset_bottom = 64.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+script = ExtResource("1_controller")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Header" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TitleLabel" type="Label" parent="VBox/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "P1"
+
+[node name="ScoreLabel" type="Label" parent="VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_font_sizes/font_size = 10
+text = "00000"
+horizontal_alignment = 1
+
+[node name="LivesLabel" type="Label" parent="VBox/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 11
+text = "^^^"
+horizontal_alignment = 2
+
+[node name="Bars" type="VBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="ShieldRow" type="HBoxContainer" parent="VBox/Bars"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="VBox/Bars/ShieldRow"]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.9)
+theme_override_font_sizes/font_size = 9
+text = "SHD"
+
+[node name="ShieldBar" type="ProgressBar" parent="VBox/Bars/ShieldRow"]
+custom_minimum_size = Vector2(90, 6)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 100.0
+show_percentage = false
+
+[node name="FuelRow" type="HBoxContainer" parent="VBox/Bars"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="VBox/Bars/FuelRow"]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.9)
+theme_override_font_sizes/font_size = 9
+text = "FUL"
+
+[node name="FuelBar" type="ProgressBar" parent="VBox/Bars/FuelRow"]
+custom_minimum_size = Vector2(90, 6)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 100.0
+show_percentage = false
+
+[node name="GunRow" type="HBoxContainer" parent="VBox/Bars"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="VBox/Bars/GunRow"]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.9)
+theme_override_font_sizes/font_size = 9
+text = "GUN"
+
+[node name="GunBar" type="ProgressBar" parent="VBox/Bars/GunRow"]
+custom_minimum_size = Vector2(70, 6)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 100.0
+show_percentage = false
+
+[node name="GunBadge" type="Label" parent="VBox/Bars/GunRow"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 8
+text = "G1"
+horizontal_alignment = 2
+
+[node name="SpecialRow" type="HBoxContainer" parent="VBox/Bars"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="VBox/Bars/SpecialRow"]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.9)
+theme_override_font_sizes/font_size = 9
+text = "SPC"
+
+[node name="SpecialBar" type="ProgressBar" parent="VBox/Bars/SpecialRow"]
+custom_minimum_size = Vector2(70, 6)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 100.0
+show_percentage = false
+
+[node name="SpecialBadge" type="Label" parent="VBox/Bars/SpecialRow"]
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.3, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "BOMB"
+horizontal_alignment = 2

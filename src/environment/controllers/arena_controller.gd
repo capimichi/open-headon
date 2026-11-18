@@ -1,7 +1,8 @@
 class_name ArenaController
 extends Node2D
 
-## Arena Controller managing dynamic level loading, terrain collision, and 2-Player Split Screen.
+## Arena Controller managing dynamic level loading, terrain collision,
+## split-screen cameras, and live player HUD updates.
 
 @export var current_level_id: int = 0
 
@@ -10,11 +11,18 @@ var ship_scene = preload("res://src/ship/views/ship.tscn")
 var ship_p1: ShipController = null
 var ship_p2: ShipController = null
 
+var match_time_remaining: float = 99.0
+var last_tick_second: int = 100
+
 @onready var viewport1: SubViewport = $CanvasLayer/SplitContainer/ViewportContainerP1/ViewportP1
 @onready var viewport2: SubViewport = $CanvasLayer/SplitContainer/ViewportContainerP2/ViewportP2
 @onready var world_root: Node2D = $CanvasLayer/SplitContainer/ViewportContainerP1/ViewportP1/WorldRoot
 @onready var camera_p1: Camera2D = $CanvasLayer/SplitContainer/ViewportContainerP1/ViewportP1/CameraP1
 @onready var camera_p2: Camera2D = $CanvasLayer/SplitContainer/ViewportContainerP2/ViewportP2/CameraP2
+
+@onready var hud_p1: Control = $CanvasLayer/HudOverlay/PlayerHudP1
+@onready var hud_p2: Control = $CanvasLayer/HudOverlay/PlayerHudP2
+@onready var timer_label: Label = $CanvasLayer/HudOverlay/MatchTimerLabel
 
 func _ready() -> void:
 	load_level(current_level_id)
@@ -82,11 +90,33 @@ func load_level(level_id: int) -> void:
 	camera_p2.reset_smoothing()
 	camera_p2.make_current()
 	
+	match_time_remaining = 99.0
+	last_tick_second = 100
+	
 	EventBus.level_loaded.emit(level_id)
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if is_instance_valid(ship_p1) and is_instance_valid(camera_p1):
 		camera_p1.position = ship_p1.position
+		if hud_p1:
+			hud_p1.update_weapon_selection(ship_p1.state.selected_gun, ship_p1.state.selected_special)
 		
 	if is_instance_valid(ship_p2) and is_instance_valid(camera_p2):
 		camera_p2.position = ship_p2.position
+		if hud_p2:
+			hud_p2.update_weapon_selection(ship_p2.state.selected_gun, ship_p2.state.selected_special)
+
+	# Match Timer update
+	match_time_remaining = maxf(0.0, match_time_remaining - delta)
+	var secs = int(ceil(match_time_remaining))
+	var mins = secs / 60
+	var rem_secs = secs % 60
+	if timer_label:
+		timer_label.text = "%02d:%02d" % [mins, rem_secs]
+		if secs <= 10:
+			timer_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2, 1.0)) # Flash red
+			if secs != last_tick_second and secs > 0:
+				last_tick_second = secs
+				EventBus.play_sfx_requested.emit("tick", Vector2.ZERO)
+		else:
+			timer_label.add_theme_color_override("font_color", Color(1.0, 1.0, 0.2, 1.0))

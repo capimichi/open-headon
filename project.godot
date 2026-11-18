@@ -21,6 +21,7 @@ config/icon="res://src/ui/assets/stuck.png"
 [autoload]
 
 EventBus="*res://src/core/controllers/event_bus.gd"
+AudioService="*res://src/core/services/audio_service.gd"
 
 [display]
 

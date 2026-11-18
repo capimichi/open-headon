@@ -33,7 +33,14 @@ func set_thrust_active(active: bool, thrust_direction: Vector2) -> void:
 			audio_engine.stop()
 
 func play_hit_effect() -> void:
-	# Flash effect
 	var tween = create_tween()
-	modulate = Color(2.5, 2.5, 2.5) # Overdrive brightness flash
+	modulate = Color(2.5, 2.5, 2.5) # Flash
 	tween.tween_property(self, "modulate", Color.WHITE, 0.15)
+
+func play_explosion_effect() -> void:
+	set_thrust_active(false, Vector2.ZERO)
+	visible = false
+
+func reset_view() -> void:
+	visible = true
+	modulate = Color.WHITE
