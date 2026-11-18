@@ -20,9 +20,6 @@ var last_tick_second: int = 100
 @onready var camera_p1: Camera2D = $CanvasLayer/SplitContainer/ViewportContainerP1/ViewportP1/CameraP1
 @onready var camera_p2: Camera2D = $CanvasLayer/SplitContainer/ViewportContainerP2/ViewportP2/CameraP2
 
-@onready var hud_p1: Control = $CanvasLayer/HudOverlay/PlayerHudP1
-@onready var hud_p2: Control = $CanvasLayer/HudOverlay/PlayerHudP2
-
 func _ready() -> void:
 	load_level(current_level_id)
 
@@ -94,13 +91,9 @@ func load_level(level_id: int) -> void:
 	
 	EventBus.level_loaded.emit(level_id)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if is_instance_valid(ship_p1) and is_instance_valid(camera_p1):
 		camera_p1.position = ship_p1.position
-		if hud_p1:
-			hud_p1.update_weapon_selection(ship_p1.state.selected_gun, ship_p1.state.selected_special)
 		
 	if is_instance_valid(ship_p2) and is_instance_valid(camera_p2):
 		camera_p2.position = ship_p2.position
-		if hud_p2:
-			hud_p2.update_weapon_selection(ship_p2.state.selected_gun, ship_p2.state.selected_special)

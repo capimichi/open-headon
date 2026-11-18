@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0splitarena01"]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/environment/controllers/arena_controller.gd" id="1_controller"]
-[ext_resource type="PackedScene" path="res://src/ui/views/player_hud.tscn" id="2_player_hud"]
+[ext_resource type="PackedScene" path="res://src/ui/views/original_bezel_hud.tscn" id="2_bezel_hud"]
 [ext_resource type="Texture2D" path="res://src/ui/assets/framev640.png" id="3_frame_bezel"]
 
 [node name="GameArena" type="Node2D"]
@@ -72,20 +72,5 @@ mouse_filter = 2
 texture = ExtResource("3_frame_bezel")
 expand_mode = 1
 
-[node name="PlayerHudP1" parent="CanvasLayer/HudOverlay" instance=ExtResource("2_player_hud")]
-layout_mode = 0
-offset_left = 14.0
-offset_top = 404.0
-offset_right = 162.0
-offset_bottom = 468.0
-
-[node name="PlayerHudP2" parent="CanvasLayer/HudOverlay" instance=ExtResource("2_player_hud")]
-layout_mode = 0
-offset_left = 334.0
-offset_top = 404.0
-offset_right = 482.0
-offset_bottom = 468.0
-target_player_id = 2
-player_label_text = "P2"
-player_theme_color = Color(1, 0.3, 0.3, 1)
-
+[node name="OriginalBezelHud" parent="CanvasLayer/HudOverlay" instance=ExtResource("2_bezel_hud")]
+layout_mode = 1
