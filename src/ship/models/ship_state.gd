@@ -46,9 +46,10 @@ func get_angle_radians() -> float:
 
 ## Exact Newtonian heading vector for thrust, weapons, and particle recoil
 func get_thrust_direction() -> Vector2:
+	# In Godot 2D (-Y is UP, +Y is DOWN):
 	# 0° = DOWN (0, 1), 90° = RIGHT (1, 0), 180° = UP (0, -1), 270° = LEFT (-1, 0)
 	var rad = get_angle_radians()
-	return Vector2(sin(rad), -cos(rad))
+	return Vector2(sin(rad), cos(rad))
 
 ## Continuous rotation methods (smooth linear 216 deg/s)
 func rotate_left_continuous(delta: float) -> void:

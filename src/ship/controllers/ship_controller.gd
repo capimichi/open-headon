@@ -77,7 +77,10 @@ func _physics_process(delta: float) -> void:
 			
 		if is_thrusting and state.fuel > 0:
 			state.is_docked = false # Takeoff!
-			docking_cooldown = 0.35  # Grace period during ascent
+			docking_cooldown = 0.45  # Grace period during ascent
+			global_position.y -= 1.0 # Slight disengagement from platform surface
+			state.velocity = state.get_thrust_direction() * 8.0 # Smooth initial lift
+			velocity = state.velocity
 			EventBus.ship_docked.emit(player_id, false)
 		else:
 			velocity = Vector2.ZERO
@@ -140,7 +143,8 @@ func _handle_rotation_input(delta: float) -> void:
 		state.rotate_right_continuous(delta)
 
 func _check_platform_docking() -> bool:
-	if velocity.y < -5.0:
+	# Only land when descending towards platform
+	if velocity.y <= 0.0:
 		return false
 	if absi(state.angle_step_index - 32) > 5:
 		return false

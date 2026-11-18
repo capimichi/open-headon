@@ -22,7 +22,6 @@ var last_tick_second: int = 100
 
 @onready var hud_p1: Control = $CanvasLayer/HudOverlay/PlayerHudP1
 @onready var hud_p2: Control = $CanvasLayer/HudOverlay/PlayerHudP2
-@onready var timer_label: Label = $CanvasLayer/HudOverlay/MatchTimerLabel
 
 func _ready() -> void:
 	load_level(current_level_id)
@@ -105,18 +104,3 @@ func _process(delta: float) -> void:
 		camera_p2.position = ship_p2.position
 		if hud_p2:
 			hud_p2.update_weapon_selection(ship_p2.state.selected_gun, ship_p2.state.selected_special)
-
-	# Match Timer update
-	match_time_remaining = maxf(0.0, match_time_remaining - delta)
-	var secs = int(ceil(match_time_remaining))
-	var mins = secs / 60
-	var rem_secs = secs % 60
-	if timer_label:
-		timer_label.text = "%02d:%02d" % [mins, rem_secs]
-		if secs <= 10:
-			timer_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2, 1.0)) # Flash red
-			if secs != last_tick_second and secs > 0:
-				last_tick_second = secs
-				EventBus.play_sfx_requested.emit("tick", Vector2.ZERO)
-		else:
-			timer_label.add_theme_color_override("font_color", Color(1.0, 1.0, 0.2, 1.0))

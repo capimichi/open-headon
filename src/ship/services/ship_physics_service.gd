@@ -44,7 +44,9 @@ static func apply_kinematics(state: ShipState, is_thrusting: bool, delta: float)
 ## Resolves an impact collision against solid terrain (restitution -0.5)
 static func resolve_bounce(state: ShipState, normal: Vector2) -> void:
 	if normal != Vector2.ZERO:
-		state.velocity = state.velocity.bounce(normal) * absf(BOUNCE_RESTITUTION)
+		# Only bounce if velocity is directed towards the collision surface
+		if state.velocity.dot(normal) < 0.0:
+			state.velocity = state.velocity.bounce(normal) * absf(BOUNCE_RESTITUTION)
 	else:
 		state.velocity *= BOUNCE_RESTITUTION
 
